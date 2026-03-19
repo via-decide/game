@@ -1,20 +1,62 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# VIA - Bharat's Social Platform 🇮🇳
 
-# Run and deploy your AI Studio app
+VIA is a next-generation social platform designed for digital explorers navigating Bharat's social landscape. Discover, create, and deep dive into the stories that matter.
 
-This contains everything you need to run your app locally.
+## 🚀 Features
 
-View your app in AI Studio: https://ai.studio/apps/dc25c123-53b7-4fa9-988a-665e920c1c9e
+- **Dynamic Feed**: Real-time social feed with high-quality content.
+- **Deep Dives**: Curated knowledge and long-form content.
+- **Discover**: Connect with other users across the platform.
+- **Phone & Google Auth**: Secure authentication options.
+- **Gamification**: Earn credits and XP through engagement.
 
-## Run Locally
+## 🛠️ Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend**: React 19, Vite, Tailwind CSS 4.
+- **Animations**: Motion (formerly Framer Motion).
+- **Icons**: Lucide React.
+- **Backend**: Firebase (Auth, Firestore).
+- **AI**: Google Gemini API integration.
 
+## 📦 Getting Started
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/via-decide/VIA.git
+   cd VIA
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file based on `.env.example` and add your Firebase and Gemini API keys.
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 📜 Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run lint`: Runs TypeScript type checking.
+- `npm run preview`: Previews the production build locally.
+
+## 🛡️ Security
+
+The project uses Firebase Security Rules to protect user data. See `firestore.rules` for details.
+
+## 📄 License
+
+This project is licensed under the Apache-2.0 License.

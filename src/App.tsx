@@ -152,8 +152,6 @@ const App: React.FC = () => {
               uid: firebaseUser.uid,
               username: identifier.split('@')[0].replace(/[^a-zA-Z0-9]/g, '') + Math.floor(Math.random() * 1000),
               displayName: firebaseUser.displayName || (firebaseUser.phoneNumber ? `User ${firebaseUser.phoneNumber.slice(-4)}` : 'Bharat Explorer'),
-              email: firebaseUser.email || undefined,
-              phoneNumber: firebaseUser.phoneNumber || undefined,
               city: 'New Delhi',
               avatarEmoji: '🇮🇳',
               bio: "Digital explorer navigating Bharat's social landscape. 🇮🇳",
@@ -165,6 +163,9 @@ const App: React.FC = () => {
               posts: 0,
               createdAt: new Date().toISOString()
             };
+
+            if (firebaseUser.email) newProfile.email = firebaseUser.email;
+            if (firebaseUser.phoneNumber) newProfile.phoneNumber = firebaseUser.phoneNumber;
             
             await setDoc(userRef, newProfile);
             setProfile(newProfile);
