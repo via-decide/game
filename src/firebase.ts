@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser, RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, query, where, getDocs, addDoc, serverTimestamp, getDocFromServer, FirestoreError } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
@@ -30,6 +30,40 @@ export const signInWithGoogle = async () => {
     throw error;
   }
 };
+
+export const setupRecaptcha = (containerId: string) => {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // If verifier exists, we might need to clear it if the container changed
+  if ((window as any).recaptchaVerifier) {
+    try {
+      (window as any).recaptchaVerifier.clear();
+    } catch (e) {
+      console.warn('Error clearing recaptcha verifier', e);
+    }
+    delete (window as any).recaptchaVerifier;
+  }
+
+  (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+    size: 'invisible',
+    callback: (response: any) => {
+      console.log('Recaptcha resolved', response);
+    }
+  });
+};
+
+export const signInWithPhone = async (phoneNumber: string) => {
+  const appVerifier = (window as any).recaptchaVerifier;
+  try {
+    const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+    return confirmationResult;
+  } catch (error) {
+    console.error('signInWithPhone error', error);
+    throw error;
+  }
+};
+
 export const logout = () => signOut(auth);
 
 // Error Handling Spec for Firestore Operations

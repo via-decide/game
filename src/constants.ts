@@ -1,87 +1,67 @@
-import { PlantStage, Tool } from './types';
+import { Post, DeepDive } from './types';
 
-export const PLANT_STAGES: PlantStage[] = [
-  { threshold: 0, name: 'Dormant Seed', color: '#5D4037', maxWater: 30, maxNutrients: 100 },
-  { threshold: 25, name: 'Sprout', color: '#388E3C', maxWater: 50, maxNutrients: 100 },
-  { threshold: 80, name: 'Sapling', color: '#43A047', maxWater: 80, maxNutrients: 120 },
-  { threshold: 180, name: 'Young Tree', color: '#2E7D32', maxWater: 120, maxNutrients: 150 },
-  { threshold: 400, name: 'Mature Tree', color: '#1B5E20', maxWater: 200, maxNutrients: 200 },
-];
-
-export const INITIAL_UPGRADES = {
-  waterEfficiency: 1.0,
-  nutrientRetention: 1.0,
-  stressResistance: 0,
-  pestDefense: 0,
-};
-
-export const INITIAL_TOOLS: Tool[] = [
+export const INITIAL_POSTS: Post[] = [
   {
-    id: 'watering-can',
-    name: 'Advanced Watering Can',
-    description: 'Increases hydration efficiency by 15% per level.',
-    level: 0,
-    maxLevel: 5,
-    baseCost: 100,
-    costMultiplier: 1.5,
-    type: 'passive',
-    bonusType: 'water',
-    bonusValue: 0.15,
+    id: 'post-1',
+    userId: 'system',
+    authorName: 'VIA Official',
+    authorAvatar: '🇮🇳',
+    content: 'Welcome to VIA - Bharat\'s own social platform. Discover stories that matter to you.',
+    imageUrl: 'https://picsum.photos/seed/via1/800/1200',
+    likes: 1240,
+    comments: 85,
+    shares: 420,
+    createdAt: new Date().toISOString()
   },
   {
-    id: 'soil-tester',
-    name: 'Digital Soil Tester',
-    description: 'Reduces nutrient drain by 10% per level.',
-    level: 0,
-    maxLevel: 5,
-    baseCost: 150,
-    costMultiplier: 1.6,
-    type: 'passive',
-    bonusType: 'nutrients',
-    bonusValue: 0.1,
+    id: 'post-2',
+    userId: 'system',
+    authorName: 'Tech Bharat',
+    authorAvatar: '🚀',
+    content: 'The future of digital India is here. Swipe to explore the latest innovations from our local creators.',
+    imageUrl: 'https://picsum.photos/seed/via2/800/1200',
+    likes: 850,
+    comments: 42,
+    shares: 150,
+    createdAt: new Date().toISOString()
   },
   {
-    id: 'pest-control',
-    name: 'Automated Pest Control',
-    description: 'Reduces pest infestation chance by 20% per level.',
-    level: 0,
-    maxLevel: 5,
-    baseCost: 200,
-    costMultiplier: 1.8,
-    type: 'passive',
-    bonusType: 'pests',
-    bonusValue: 0.2,
-  },
-  {
-    id: 'stress-monitor',
-    name: 'Stress Monitor',
-    description: 'Reduces stress build-up from research by 1 per level.',
-    level: 0,
-    maxLevel: 5,
-    baseCost: 120,
-    costMultiplier: 1.4,
-    type: 'passive',
-    bonusType: 'stress',
-    bonusValue: 1,
-  },
-  {
-    id: 'data-extractor',
-    name: 'Data Extractor',
-    description: 'Increases credit gain from research by 2 per level.',
-    level: 0,
-    maxLevel: 5,
-    baseCost: 180,
-    costMultiplier: 1.7,
-    type: 'passive',
-    bonusType: 'credits',
-    bonusValue: 2,
+    id: 'post-3',
+    userId: 'system',
+    authorName: 'Culture Hub',
+    authorAvatar: '🎨',
+    content: 'Celebrating the vibrant colors and traditions of our diverse heritage. What\'s your favorite festival?',
+    imageUrl: 'https://picsum.photos/seed/via3/800/1200',
+    likes: 2100,
+    comments: 310,
+    shares: 890,
+    createdAt: new Date().toISOString()
   }
 ];
 
-export const SHOP_ITEMS = [
-  { id: 'compost', name: 'Compost', cost: 15, nut: 40, stress: 0, type: 'fertilizer' },
-  { id: 'synthetic', name: 'Synthetic', cost: 25, nut: 80, stress: 15, type: 'fertilizer' },
-  { id: 'organic', name: 'Organic Premium', cost: 50, nut: 100, stress: -20, type: 'fertilizer' },
-  { id: 'neem', name: 'Neem Oil', cost: 15, kills: 1, stress: 0, type: 'pesticide' },
-  { id: 'chemical', name: 'Chemical Spray', cost: 25, kills: 5, stress: 15, type: 'pesticide' },
+export const INITIAL_DEEP_DIVES: DeepDive[] = [
+  {
+    id: 'dive-1',
+    title: 'The Rise of Digital Bharat',
+    subtitle: 'How connectivity is changing lives in rural India.',
+    summary: 'A deep look into the impact of affordable internet on education, healthcare, and entrepreneurship in small villages.',
+    content: 'Full story content about digital transformation in rural areas...',
+    imageUrl: 'https://picsum.photos/seed/dive1/1200/800',
+    category: 'Technology',
+    readTime: 8,
+    participants: 1240,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'dive-2',
+    title: 'Sustainable Farming 2.0',
+    subtitle: 'Modern tech meets ancient wisdom.',
+    summary: 'Exploring how young farmers are using AI and IoT to optimize crop yields while preserving traditional organic methods.',
+    content: 'Full story content about modern agriculture...',
+    imageUrl: 'https://picsum.photos/seed/dive2/1200/800',
+    category: 'Agriculture',
+    readTime: 12,
+    participants: 850,
+    createdAt: new Date().toISOString()
+  }
 ];

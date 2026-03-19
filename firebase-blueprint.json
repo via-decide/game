@@ -2,42 +2,106 @@
   "entities": {
     "User": {
       "title": "User Profile",
-      "description": "Stores user credits, genetic data, and game state.",
+      "description": "Stores user profile, stats, and activity.",
       "type": "object",
       "properties": {
         "uid": { "type": "string", "description": "Firebase Auth UID" },
-        "displayName": { "type": "string", "description": "User's public name" },
+        "username": { "type": "string", "description": "Unique username" },
+        "displayName": { "type": "string", "description": "Public display name" },
         "email": { "type": "string", "description": "User's email" },
-        "credits": { "type": "number", "description": "Current liquid capital" },
-        "dataSeeds": { "type": "number", "description": "Current genetic data" },
-        "day": { "type": "number", "description": "Current game day" },
-        "upgrades": { "type": "object", "description": "Global upgrades state" },
-        "tools": { "type": "array", "description": "List of owned tools and their levels" },
-        "orchards": { "type": "array", "description": "List of orchards and their plants" }
+        "phoneNumber": { "type": "string", "description": "User's phone number" },
+        "city": { "type": "string", "description": "User's city" },
+        "avatarEmoji": { "type": "string", "description": "User's avatar emoji" },
+        "bio": { "type": "string", "description": "User's bio" },
+        "credits": { "type": "number", "description": "User's credits" },
+        "xp": { "type": "number", "description": "Experience points" },
+        "level": { "type": "number", "description": "User level" },
+        "followers": { "type": "number", "description": "Number of followers" },
+        "following": { "type": "number", "description": "Number of following" },
+        "posts": { "type": "number", "description": "Number of posts" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation time" }
       },
-      "required": ["uid", "credits", "dataSeeds", "day", "orchards", "tools"]
+      "required": ["uid", "username", "displayName", "credits", "xp", "level", "followers", "following", "posts", "createdAt"]
     },
-    "Transfer": {
-      "title": "Credit Transfer",
-      "description": "Record of a credit transfer between users.",
+    "Post": {
+      "title": "Social Post",
+      "description": "A post in the feed.",
       "type": "object",
       "properties": {
-        "from": { "type": "string", "description": "Sender UID" },
-        "to": { "type": "string", "description": "Receiver UID" },
-        "amount": { "type": "number", "description": "Amount of credits transferred" },
-        "timestamp": { "type": "string", "format": "date-time", "description": "When the transfer occurred" }
+        "userId": { "type": "string", "description": "Author UID" },
+        "authorName": { "type": "string", "description": "Author display name" },
+        "authorAvatar": { "type": "string", "description": "Author avatar emoji" },
+        "content": { "type": "string", "description": "Post text content" },
+        "imageUrl": { "type": "string", "description": "Optional image URL" },
+        "likes": { "type": "number", "description": "Number of likes" },
+        "comments": { "type": "number", "description": "Number of comments" },
+        "shares": { "type": "number", "description": "Number of shares" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Post creation time" }
       },
-      "required": ["from", "to", "amount", "timestamp"]
+      "required": ["userId", "authorName", "authorAvatar", "content", "likes", "comments", "shares", "createdAt"]
+    },
+    "DeepDive": {
+      "title": "Deep Dive Story",
+      "description": "A cinematic story breakdown.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Story title" },
+        "subtitle": { "type": "string", "description": "Story subtitle" },
+        "summary": { "type": "string", "description": "Short summary for the card" },
+        "content": { "type": "string", "description": "Story content" },
+        "imageUrl": { "type": "string", "description": "Background image URL" },
+        "category": { "type": "string", "description": "Story category" },
+        "readTime": { "type": "number", "description": "Estimated read time in minutes" },
+        "participants": { "type": "number", "description": "Number of participants" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation time" }
+      },
+      "required": ["title", "subtitle", "summary", "content", "imageUrl", "category", "readTime", "participants", "createdAt"]
+    },
+    "Comment": {
+      "title": "Post Comment",
+      "description": "A comment on a post.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Author UID" },
+        "authorName": { "type": "string", "description": "Author display name" },
+        "authorAvatar": { "type": "string", "description": "Author avatar emoji" },
+        "content": { "type": "string", "description": "Comment text" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Comment creation time" }
+      },
+      "required": ["userId", "authorName", "authorAvatar", "content", "createdAt"]
+    },
+    "Follow": {
+      "title": "User Follow",
+      "description": "Represents a follow relationship between two users.",
+      "type": "object",
+      "properties": {
+        "followerId": { "type": "string", "description": "UID of the user who is following" },
+        "followingId": { "type": "string", "description": "UID of the user being followed" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the follow occurred" }
+      },
+      "required": ["followerId", "followingId", "createdAt"]
     }
   },
   "firestore": {
     "/users/{userId}": {
       "schema": "User",
-      "description": "Individual user game state."
+      "description": "Individual user profiles."
     },
-    "/transfers/{transferId}": {
-      "schema": "Transfer",
-      "description": "Log of all credit transfers."
+    "/posts/{postId}": {
+      "schema": "Post",
+      "description": "Global feed posts."
+    },
+    "/posts/{postId}/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Comments on a post."
+    },
+    "/follows/{followId}": {
+      "schema": "Follow",
+      "description": "Follow relationships."
+    },
+    "/deep_dives/{diveId}": {
+      "schema": "DeepDive",
+      "description": "Cinematic story breakdowns."
     }
   }
 }

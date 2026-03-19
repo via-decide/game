@@ -1,66 +1,56 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Devanagari:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-bebas: "Bebas Neue", sans-serif;
+  --font-noto: "Noto Sans Devanagari", sans-serif;
+  --font-playfair: "Playfair Display", serif;
+  --font-serif-display: "DM Serif Display", serif;
+  --font-syne: "Syne", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-serif: "Merriweather", serif;
 
-  --color-soil-dark: #1A1614;
-  --color-soil-light: #282320;
-  --color-bark-brown: #4A3B32;
-  --color-leaf-green: #52B756;
-  --color-leaf-dark: #388E3C;
-  --color-water-blue: #29B6F6;
-  --color-mineral-gold: #FFCA28;
-  --color-burn-red: #E53935;
-  --color-toxic-green: #76FF03;
+  --color-via-dark: #0B0B1A;
+  --color-via-accent: #FF3D00;
+  --color-via-gold: #FFD700;
 }
 
-:root {
-  --bg: #151619;
-  --card-bg: #1c1d21;
-  --text-primary: #FFFFFF;
-  --text-secondary: #8E9299;
+@layer base {
+  body {
+    @apply bg-via-dark text-white font-sans overflow-hidden select-none;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-body {
-  background-color: var(--bg);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
+@layer components {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .feed-container {
+    @apply h-screen w-full snap-y snap-mandatory overflow-y-scroll scroll-smooth;
+    scrollbar-width: none;
+  }
+  
+  .feed-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .post-card {
+    @apply h-screen w-full snap-start relative flex flex-col justify-end p-6 pb-24;
+  }
+  
+  .nav-blur {
+    @apply fixed bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-via-dark to-transparent pointer-events-none z-40;
+  }
 }
 
-.hardware-panel {
-  background-color: var(--card-bg);
-  border: 1px solid #2a2b2f;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.dashed-border {
-  border: 1px dashed #3a3b3f;
-}
-
-.status-glow-green {
-  box-shadow: 0 0 15px rgba(82, 183, 86, 0.3);
-}
-
-.status-glow-red {
-  box-shadow: 0 0 15px rgba(229, 57, 53, 0.3);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #3a3b3f;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #4a4b4f;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 

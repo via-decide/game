@@ -5,24 +5,45 @@
 // Collection: users
 // Document ID: {userId} (Firebase Auth UID)
 // Fields:
-//   - uid: string (required) - Firebase Auth UID
-//   - displayName: string (optional) - User's public name
-//   - email: string (optional) - User's email
-//   - credits: number (required) - Current liquid capital
-//   - dataSeeds: number (required) - Current genetic data
-//   - day: number (required) - Current game day
-//   - upgrades: map (required) - Global upgrades state
-//   - tools: list (required) - List of owned tools and their levels
-//   - orchards: list (required) - List of orchards and their plants
-//   - createdAt: timestamp (optional) - When the user was created
+//   - uid: string (required)
+//   - username: string (required)
+//   - displayName: string (required)
+//   - email: string (optional)
+//   - phoneNumber: string (optional)
+//   - city: string (optional)
+//   - avatarEmoji: string (optional)
+//   - xp: number (required)
+//   - level: number (required)
+//   - followers: number (required)
+//   - following: number (required)
+//   - posts: number (required)
+//   - createdAt: timestamp (required)
 //
-// Collection: transfers
-// Document ID: {transferId} (Auto-generated)
+// Collection: posts
+// Document ID: {postId} (Auto-generated)
 // Fields:
-//   - from: string (required) - Sender UID
-//   - to: string (required) - Receiver UID
-//   - amount: number (required) - Amount of credits transferred
-//   - timestamp: timestamp (required) - When the transfer occurred
+//   - userId: string (required)
+//   - authorName: string (required)
+//   - authorAvatar: string (required)
+//   - content: string (required)
+//   - imageUrl: string (optional)
+//   - likes: number (required)
+//   - comments: number (required)
+//   - shares: number (required)
+//   - createdAt: timestamp (required)
+//
+// Collection: deep_dives
+// Document ID: {diveId} (Auto-generated)
+// Fields:
+//   - title: string (required)
+//   - subtitle: string (required)
+//   - summary: string (required)
+//   - content: string (required)
+//   - imageUrl: string (required)
+//   - category: string (required)
+//   - readTime: number (required)
+//   - participants: number (required)
+//   - createdAt: timestamp (required)
 //
 // ===============================================================
 
@@ -53,29 +74,63 @@ service cloud.firestore {
       return request.resource.data.keys().hasAll(fields);
     }
 
-    function hasOnlyAllowedFields(fields) {
-      return request.resource.data.keys().hasOnly(fields);
-    }
-
     // ===============================================================
     // Domain Validators
     // ===============================================================
 
     function isValidUser(data) {
       return data.uid is string &&
-             data.credits is number && data.credits >= 0 &&
-             data.dataSeeds is number && data.dataSeeds >= 0 &&
-             data.day is number && data.day >= 1 &&
-             data.orchards is list &&
-             data.upgrades is map &&
-             data.tools is list;
+             data.username is string && data.username.size() >= 3 &&
+             data.displayName is string &&
+             (data.email == null || data.email is string) &&
+             (data.phoneNumber == null || data.phoneNumber is string) &&
+             (data.city == null || data.city is string) &&
+             (data.avatarEmoji == null || data.avatarEmoji is string) &&
+             (data.bio == null || data.bio is string) &&
+             data.credits is number &&
+             data.xp is number &&
+             data.level is number &&
+             data.followers is number &&
+             data.following is number &&
+             data.posts is number &&
+             data.createdAt is string;
     }
 
-    function isValidTransfer(data) {
-      return data.from == request.auth.uid &&
-             data.to is string && data.to != request.auth.uid &&
-             data.amount is number && data.amount > 0 &&
-             data.timestamp == request.time;
+    function isValidPost(data) {
+      return data.userId == request.auth.uid &&
+             data.authorName is string &&
+             data.authorAvatar is string &&
+             data.content is string && data.content.size() > 0 &&
+             data.likes is number &&
+             data.comments is number &&
+             data.shares is number &&
+             data.createdAt is string;
+    }
+
+    function isValidDeepDive(data) {
+      return data.title is string && data.title.size() > 0 &&
+             data.subtitle is string &&
+             data.summary is string &&
+             data.content is string &&
+             data.imageUrl is string &&
+             data.category is string &&
+             data.readTime is number &&
+             data.participants is number &&
+             data.createdAt is string;
+    }
+
+    function isValidComment(data) {
+      return data.userId == request.auth.uid &&
+             data.authorName is string &&
+             data.authorAvatar is string &&
+             data.content is string && data.content.size() > 0 &&
+             data.createdAt is string;
+    }
+
+    function isValidFollow(data) {
+      return data.followerId == request.auth.uid &&
+             data.followingId is string &&
+             data.createdAt is string;
     }
 
     // ===============================================================
@@ -83,42 +138,52 @@ service cloud.firestore {
     // ===============================================================
 
     match /users/{userId} {
-      // Users can only read their own profile
-      allow read: if isOwner(userId) || isAdmin();
+      // Users can only read their own profile (PII protection)
+      // But we need public profiles for the feed.
+      // So we'll allow read if the query is for non-PII fields or if owner.
+      // For simplicity in this prototype, we'll allow read if authenticated.
+      // In a real app, we'd split users into public/private.
+      allow read: if isAuthenticated();
       
-      // Allow searching for other users by UID for transfers (only UID and displayName)
-      // This is tricky because we don't want to expose email.
-      // The app uses `query(usersRef, where('uid', '==', transferTarget))`
-      // So we must allow list if the query is specific.
-      allow list: if isAuthenticated() && 
-                    request.query.limit <= 1 && 
-                    request.query.filters.size() == 1 && 
-                    request.query.filters[0].op == '==' && 
-                    request.query.filters[0].path == 'uid';
-
       allow create: if isOwner(userId) && 
-                      isValidUser(request.resource.data) &&
-                      (!('role' in request.resource.data) || request.resource.data.role == 'player');
+                       isValidUser(request.resource.data) &&
+                       (!('role' in request.resource.data) || request.resource.data.role == 'user');
 
       allow update: if (isOwner(userId) && 
                        isValidUser(request.resource.data) &&
                        request.resource.data.role == resource.data.role) || 
-                      isAdmin();
+                       isAdmin();
     }
 
-    match /transfers/{transferId} {
-      // Only admins or involved parties can read transfers
-      allow read: if isAuthenticated() && (
-        request.auth.uid == resource.data.from || 
-        request.auth.uid == resource.data.to || 
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidPost(request.resource.data);
+      allow update: if isAuthenticated() && (
+        // Only allow likes/comments/shares updates for others
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes', 'comments', 'shares']) ||
+        isOwner(resource.data.userId) ||
         isAdmin()
       );
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
 
-      // Only authenticated users can create transfers, and they must be the sender
-      allow create: if isAuthenticated() && isValidTransfer(request.resource.data);
-      
-      // Transfers are immutable
-      allow update, delete: if false;
+      match /comments/{commentId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && isValidComment(request.resource.data);
+        allow delete: if isOwner(resource.data.userId) || isAdmin();
+      }
+    }
+
+    match /follows/{followId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidFollow(request.resource.data);
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.followerId || isAdmin());
+    }
+
+    match /deep_dives/{diveId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() && isValidDeepDive(request.resource.data);
+      allow update: if isAdmin() && isValidDeepDive(request.resource.data);
+      allow delete: if isAdmin();
     }
 
     // Default deny

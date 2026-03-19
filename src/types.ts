@@ -3,71 +3,55 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type PlantStage = {
-  threshold: number;
-  name: string;
-  color: string;
-  maxWater: number;
-  maxNutrients: number;
-};
-
-export type Plant = {
-  id: string;
-  type: string;
-  rootStrength: number;
-  water: number;
-  nutrients: number;
-  stress: number;
-  pests: number;
-  pestImmunity: number;
-  stageIndex: number;
-  isHarvestable: boolean;
-};
-
-export type GlobalUpgrades = {
-  waterEfficiency: number; // multiplier for water consumption
-  nutrientRetention: number; // multiplier for nutrient drain
-  stressResistance: number; // flat reduction in stress gain
-  pestDefense: number; // base chance to block pests
-};
-
-export type Orchard = {
-  id: string;
-  name: string;
-  plants: (Plant | null)[];
-  isUnlocked: boolean;
-  unlockCost: number;
-};
-
-export type Tool = {
-  id: string;
-  name: string;
-  description: string;
-  level: number;
-  maxLevel: number;
-  baseCost: number;
-  costMultiplier: number;
-  type: 'passive' | 'active';
-  bonusType: 'water' | 'nutrients' | 'stress' | 'pests' | 'credits';
-  bonusValue: number;
-  activeCooldown?: number;
-  currentCooldown?: number;
-};
-
-export type GameState = {
-  day: number;
+export type UserProfile = {
+  uid: string;
+  username: string;
+  displayName: string;
+  email?: string;
+  phoneNumber?: string;
+  city?: string;
+  avatarEmoji?: string;
+  bio?: string;
   credits: number;
-  dataSeeds: number;
-  orchards: Orchard[];
-  activeOrchardId: string;
-  selectedPlantIndex: number | null;
-  upgrades: GlobalUpgrades;
-  tools: Tool[];
-  activeTab: 'orchard' | 'lab' | 'market' | 'tools';
-  user: {
-    uid: string;
-    displayName: string | null;
-    email: string | null;
-  } | null;
+  xp: number;
+  level: number;
+  followers: number;
+  following: number;
+  posts: number;
+  createdAt: any;
+};
+
+export type Post = {
+  id: string;
+  userId: string;
+  authorName: string;
+  authorAvatar: string;
+  content: string;
+  imageUrl?: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  createdAt: any;
+};
+
+export type DeepDive = {
+  id: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  content: string;
+  imageUrl: string;
+  category: string;
+  readTime: number;
+  participants: number;
+  createdAt: any;
+};
+
+export type AppState = {
+  activeTab: 'feed' | 'dives' | 'market' | 'profile';
+  user: UserProfile | null;
   isAuthReady: boolean;
+  posts: Post[];
+  deepDives: DeepDive[];
+  currentPostIndex: number;
 };
